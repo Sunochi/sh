@@ -14,17 +14,30 @@ realpath ()
     echo "$dir$base"
 }
 
-moveDir()
+copyDir()
 {
-echo "success!"
-echo "Make buckup folder '~/.backup'"
+  CURRENT_DATE=`date '+%Y%m%d_%H%M%S'`
+  dir_name="${1}_${CURRENT_DATE}/"
+  mkdir -p ~/.backup$dir_name
+  cp -r $1 ~/.backup$dir_name
+  echo "success!"
 }
 
-moveFile()
+copyFile()
 {
-echo "success!"
-echo "Make buckup folder '~/.backup'"
+  CURRENT_DATE=`date '+%Y%m%d_%H%M%S'`
+
+  file_name="${1}_${CURRENT_DATE}"
+  dir=$(dirname "$file_name")
+  echo $file_name
+  mkdir -p ~/.backup$dir
+  cp $1 ~/.backup$file_name
+  echo "success!"
 }
+if [ ! -e ~/.backup ]
+then
+    mkdir ~/.backup
+fi
 
 if [ $# -eq 0 ]
 then
@@ -39,11 +52,11 @@ then
         if [ -f $path ]
         then
             echo "ファイルはあります！"
-            moveFile $path
+            copyFile $path
         elif [ -d $path ]
         then
             echo "ディレクトリはあります！"
-            moveDir $path
+            copyDir $path
         fi
     else
         echo "An error occurred. Absolute path required."
